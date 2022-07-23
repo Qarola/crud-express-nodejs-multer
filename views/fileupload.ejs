@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Simple PDF Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.min.js"></script>
+    <style>
+        html {
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .img-thumbnail {
+            height: 1000px;
+
+        }
+
+        .btn-uploaded {
+            text-decoration: none;
+            border-radius: 10px;
+            height: 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center text-primary fw-bold mt-3 mb-3"><b>
+                <%= title %>
+            </b></h1>
+        <div class="card">
+            <div class="card-header">File Upload</div>
+            <div class="card-body">
+                <h3>Enter Customer data</h3>
+
+                <form enctype="multipart/form-data" action="/fileupload" method="post">
+                    <table class="table">
+                        <tr>
+                            <input type="" text name="name" class="input-group mb-3" placeholder="Name" />
+                            <input type="" text name="email" class="input-group mb-3" placeholder="Email" />
+                            <input type="" text name="phone" class="input-group mb-3" placeholder="Phone" />
+                            <input type="" text name="password" class="input-group mb-3" placeholder="Password" />
+                            <input type="submit" name="submit" class="btn btn-primary" value="Send" />
+                            <th>Select File</th>
+                            <td>
+                                <input type="file" name="pdfFile" id='pdfFile' required />
+                            </td>
+                            <td>
+                                <input type="" text name="name" class="input-group mb-3" placeholder="Banner name" />
+                                <input type="" text name="endAt" class="input-group mb-3" placeholder="Banner end at" />
+                                <input type="" text name="startAt" class="input-group mb-3"
+                                    placeholder="Banner start at" />
+                                <input type="" text name="status" class="input-group mb-3"
+                                    placeholder="Banner status (true or false)" />
+                                <input type="submit" name="submit" class="btn btn-primary" value="Upload File" />
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="mt-5">
+                        <% if(file.length> 0) { %>
+                            <div class="alert alert-success">
+                                File is uploaded successfully
+                            </div>
+                            <!-- queremos mostrar la imagen cargada en el archivo de plantilla views/fileupload.ejs , por lo que en el código a continuación puede encontrar cómo mostrar el nombre de la imagen cargada desde el mensaje flash de la sesión. -->
+                            <img src="./api/uploads/<%= file %>" class="img-thumbnail" width="1200" height="1000" />
+
+                            <% } %>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- <button type="submit">
+            <a href="fileuploaded" class="btn-uploaded">See file uploaded</a>
+        </button>  -->
+
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+        </script>
+</body>
+
+</html>
