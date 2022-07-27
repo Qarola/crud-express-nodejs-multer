@@ -6,7 +6,7 @@
 $ cd
 $ mkdir "nome da pasta/arquivo para criar"
 $ cd "nome da pasta criada"
-$ git clone https://github.com/Qarola/CRUD.git
+$ git clone https://github.com/Qarola/crud-express-nodejs-multer.git
 
 Abra seu arquivo em seu terminal/console VSCode ou Git Bash.
 
