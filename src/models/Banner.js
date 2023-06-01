@@ -13,6 +13,7 @@ module.exports = (sequelize) => {
       image: {
         type: DataTypes.STRING,
         allowNull: false,
+        default: "",
       },
       endAt: {
         type: DataTypes.STRING,
@@ -23,6 +24,10 @@ module.exports = (sequelize) => {
       status: {
         type: DataTypes.BOOLEAN,
       },
+       customerId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      }, 
     },
     { timestamps: false }
   );

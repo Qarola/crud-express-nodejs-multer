@@ -80,53 +80,30 @@ router.get("/customers", getAllCustomers);
  */
 router.post("/customer", createCustomer); 
 
-/**
- * @swagger
- * /customers/{id}:
- *   get:
- *      summary: Get customer by id
- *      description: Get a customer by id
- *      tags:
- *          [Customer]
- *      parameters:
- *          - in: path
- *            name: id
- *            type: integer
- *            description: Customer by id
- *            required: true
- *      responses:
- *          '200':
- *              description: Resource added successfully
- *          '500':
- *              description: Internal server error
- *          '400':
- *              description: Bad request
- */
-router.get("/customers/:id", getCustomerById); 
+
+
 
 /**
  * @swagger
  * /update/{id}:
  *   put:
- *      summary: Update a costomer
- *      description: Update a banner
- *      tags: [Customer]
+ *      summary: Update a customer
+ *      description: Update a customer with the specified ID.
+ *      tags: 
+ *          - Customer
  *      parameters:
  *          - in: path
  *            name: id
- *            type: integer
- *            description: Customer by id
+ *            schema:
+ *              type: integer
  *            required: true
+ *            description: The ID of the customer to update.
  *          - in: body
- *            name: Update
- *            description: Customer data
+ *            name: Customer Data
+ *            required: true
+ *            description: Data to update a customer
  *            schema:
  *              type: object
- *              required:
- *                 - name
- *                 - email
- *                 - phone
- *                 - password
  *              properties:
  *                  name:
  *                      type: string
@@ -140,6 +117,7 @@ router.get("/customers/:id", getCustomerById);
  *                      example: amit@sample.com
  *                  phone:
  *                      type: string
+ *                      pattern: "^\\+?[0-9]+(?:[-\\s][0-9]+)*$"
  *                  password:
  *                      type: string
  *                      minLength: 1
@@ -147,13 +125,14 @@ router.get("/customers/:id", getCustomerById);
  *                      example: abcd123
  *      responses:
  *          '200':
- *              description: Resource added successfully
+ *              description: Resource updated successfully
  *          '500':
  *              description: Internal server error
  *          '400':
  *              description: Bad request
  */
-router.put("/update/:id", updateCustomer); 
+router.put("/update/:id", updateCustomer);
+
 
 /**
  * @swagger
@@ -329,11 +308,11 @@ const storage = multer.diskStorage({
   },
 });
 
-const uploads = multer({ storage });
+const upload = multer({ storage });
 
 //Get all images
 router.get("/images", (req, res) => {
-  const uploadsDirectory = path.join("uploads");
+  const uploadsDirectory = path.join("upload");
 
   fs.readdir(uploadsDirectory, (err, files) => {
     if (err) {
@@ -348,48 +327,69 @@ router.get("/images", (req, res) => {
   });
 });
 
-//Create a banner
+/* //Create a banner
 
 /**
  * @swagger
  * /add:
  *   post:
- *      summary: Create a new banner
- *      description: Add a banner to DB.
- *      tags: [Banner]
- *      parameters:
- *          - in: formData
- *            type: string
- *            required:
- *            description: Banner data
- *            requestBody:
- *            content:
- *               image/png:
- *            schema:
- *              type: string
- *              format: binary
- *              properties:
- *                  name:
- *                      type: string
- *                      minLength: 1
- *                      maxLength: 100
- *                      example: Banner one
- *                  image:
- *                      type: string
- *                      example: abc.png
- *                  customerId:
- *                      type: integer
- *                      example: 1
- *                  required: true
- *      responses:
- *          '200':
- *              description: Resource added successfully
- *          '500':
- *              description: Internal server error
- *          '400':
- *              description: Bad request
+ *     summary: Create a new banner
+ *     description: Add a new banner to the database.
+ *     tags: [Banner]
+ *     consumes:
+ *       - multipart/form-data
+ *     parameters:
+ *       - in: formData
+ *         name: name
+ *         description: Banner name
+ *         required: true
+ *         type: string
+ *         minLength: 1
+ *         maxLength: 100
+ *         example: Banner one
+ *       - in: formData
+ *         name: image
+ *         description: Banner image file
+ *         required: true
+ *         type: file
+ *         save: image_data
+ *       - in: formData
+ *         name: endAt
+ *         description: End date of the banner
+ *         required: true
+ *         type: string
+ *         format: date
+ *         example: 2023-06-01
+ *       - in: formData
+ *         name: startAt
+ *         description: Start date of the banner
+ *         required: true
+ *         type: string
+ *         format: date
+ *         example: 2023-05-31
+ *       - in: formData
+ *         name: status
+ *         description: Status of the banner
+ *         required: true
+ *         type: boolean
+ *         example: true
+ *       - in: formData
+ *         name: customerId
+ *         description: ID of the customer associated with the banner
+ *         required: true
+ *         type: integer
+ *         example: 1
+ *     responses:
+ *       '200':
+ *         description: Banner created successfully
+ *       '400':
+ *         description: Bad request
+ *       '500':
+ *         description: Internal server error
  */
-router.post("/add", uploads.single("image"), (req, res) => {
+
+
+router.post("/add", upload.single("image"), async (req, res) => {
   try {
     let info = {
       name: req.body.name,
@@ -397,15 +397,16 @@ router.post("/add", uploads.single("image"), (req, res) => {
       endAt: req.body.endAt,
       startAt: req.body.startAt,
       status: req.body.status,
-      customerId: req.body.customerId,
+      customerId: parseInt(req.body.customerId)
     };
      //Save to Banner Database
-    const imgUpload = Banner.create(info);
+    const newBanner = await Banner.create(info);
     res.status(200).json({ msg: "File successfully created" });
   } catch (err) {
     console.log(err);
-    res.status(200).json({ msg: "File successfully created" });
+    res.status(500).json({ msg: "Internal server error" });
   }
 });
+
 
 module.exports = router;

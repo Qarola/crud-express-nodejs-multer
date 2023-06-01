@@ -9,11 +9,12 @@ const createCustomer = async (req, res) => {
   const patternPhone =
     /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
   const patternEmail = /\S+@\S+\.\S+/;
+
   try {
     if (
-      !req.body.name.match(patternName) ||
-      !req.body.email.match(patternEmail) ||
-      !req.body.phone.match(patternPhone)
+      (name && !name.match(patternName)) ||
+      (email && !email.match(patternEmail)) ||
+      (phone && !phone.match(patternPhone))
     ) {
       return res.json({ msg: "Please enter correct data" });
     } else {
@@ -80,29 +81,32 @@ const getCustomerById = async (req, res) => {
 };
 
 //Update a customer
-const updateCustomer = async (req, res) => {
+/* const updateCustomer = async (req, res) => {
   const { id } = req.params;
   const { name, email, phone, password } = req.body;
+
   try {
-    const updateCustomers = await Customer.findAll({
-      attributes: ["id", "name", "email", "phone", "password"],
-      where: {
-        id,
-      },
-    });
-    if (updateCustomers.length > 0) {
-      updateCustomers.map(async (updateCustomer) => {
-        await updateCustomer.update({
-          name,
-          email,
-          phone,
-          password,
-        });
+    const customer = await Customer.findById(id);
+
+    if (!customer) {
+      return res.status(404).json({
+        message: "Customer not found",
+        data: {},
       });
     }
+
+    await customer.update({
+      name,
+      email,
+      phone,
+      password,
+    });
+
     return res.json({
       message: "Customer updated",
-      data: updateCustomers,
+      data: {
+        id: customer.id,
+      },
     });
   } catch (error) {
     console.log(error);
@@ -112,7 +116,51 @@ const updateCustomer = async (req, res) => {
     });
     return;
   }
-};
+}; */
+
+const updateCustomer = async (req, res) => {
+  const { id } = req.params;
+  const { name, email, phone, password } = req.body;
+
+  try {
+    const customer = await Customer.findByPk(id);
+
+    if (!customer) {
+      return res.status(404).json({
+        message: "Customer not found",
+        data: {},
+      });
+    }
+
+    if (name) {
+      customer.name = name;
+    }
+    if (email) {
+      customer.email = email;
+    }
+    if (phone) {
+      customer.phone = phone;
+    }
+    if (password) {
+      customer.password = password;
+    }
+
+    await customer.save();
+
+    return res.json({
+      message: "Customer updated",
+      data: customer,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Something went wrong",
+      data: {},
+    });
+    return;
+  }
+}; 
+
 
 //Delete a customer
 const deleteCustomer = async (req, res) => {

@@ -34,9 +34,14 @@ const { Customer, Banner } = sequelize.models;
 
 // Aca vendrian las relaciones
 
-Customer.hasMany(Banner,{foreignKey:"customerId"});
+//Customer.hasMany(Banner);
 //un banner pertenece a un customer
-Banner.belongsTo(Customer,{foreignKey:"customerId"});
+//Banner.belongsTo(Customer);
+
+Banner.belongsTo(Customer, { foreignKey: 'customerId' });
+Customer.hasMany(Banner, { foreignKey: 'customerId' });
+
+  
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
