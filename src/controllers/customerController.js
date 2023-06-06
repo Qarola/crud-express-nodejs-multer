@@ -5,6 +5,7 @@ const Op = Sequelize.Op;
 //Create a customer
 const createCustomer = async (req, res) => {
   const { name, email, phone, password } = req.body;
+  console.log(req.body);
   const patternName = /^([a-zA-Z' ]+)$/;
   const patternPhone =
     /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
@@ -69,7 +70,7 @@ const getCustomerById = async (req, res) => {
   try {
     const customer = await Customer.findOne({
       where: {
-        id,
+        id: id,
       },
     });
     return res.status(200).json(customer);
@@ -81,7 +82,7 @@ const getCustomerById = async (req, res) => {
 };
 
 //Update a customer
-/* const updateCustomer = async (req, res) => {
+const updateCustomer = async (req, res) => {
   const { id } = req.params;
   const { name, email, phone, password } = req.body;
 
@@ -116,14 +117,231 @@ const getCustomerById = async (req, res) => {
     });
     return;
   }
-}; */
+};
 
-const updateCustomer = async (req, res) => {
+//Delete a customer
+const deleteCustomer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleteCustomer = await Customer.destroy({
+      where: { id },
+    });
+    res.json({
+      message: "Customer deleted",
+      count: deleteCustomer,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong",
+      data: {},
+    });
+  }
+};
+//Get customerId from Banner
+const getCustomerIdBanners = async (req, res) => {
   const { id } = req.params;
-  const { name, email, phone, password } = req.body;
+  //console.log("this is an id: ", id);
+  try {
+    const banners = await Banner.findAll({
+      attributes: [
+        "id",
+        "name",
+        "image",
+        "endAt",
+        "startAt",
+        "status",
+        "customerId",
+      ],
+      where: { customerId: id },
+    });
+    console.log("banners; ", banners);
+    res.json(banners);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+module.exports = {
+  createCustomer,
+  getAllCustomers,
+  getCustomerById,
+  updateCustomer,
+  deleteCustomer,
+  getCustomerIdBanners,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//UPDATE A CUSTOMER (También funciona así)
+/* const updateCustomer = async (req, res) => {
+  const {id} = req.params;
+  const { name, email, phone, password} = req.body;
+  console.log(req.body)
 
   try {
-    const customer = await Customer.findByPk(id);
+    // Buscar el customer por su ID
+    const customer = await Customer.findOne({
+      where: {
+        id: id,
+      },
+    }); // Ajusta el ID del customer que se desea actualizar
+
+    if (!customer) {
+      return res.status(404).json({ error: 'Customer not found' });
+    }
+
+    // Actualizar los campos del custumer
+    customer.name = name || customer.name;
+    customer.email = email || customer.email;
+    customer.phone = phone || customer.phone;
+    customer.password = password || customer.password;
+
+    // Guardar los cambios en la base de datos
+    await customer.save();
+
+    res.json({ message: 'Successfully Updated Customer' });
+  } catch (error) {
+    console.error('Error updating customer:', error);
+    res.status(500).json({ error: 'Error updating customer' });
+  }
+} 
+
+//UPDATE A CUSTOMER (También funciona así)
+  const updateCustomer = async (req, res) => {
+  const { id } = req.params;
+  const { name, email, phone, password } = req.body;
+  console.log(req.body)
+
+  try {
+    const customer = await Customer.findOne({
+      where: {
+        id: id,
+      },
+    });
 
     if (!customer) {
       return res.status(404).json({
@@ -159,55 +377,5 @@ const updateCustomer = async (req, res) => {
     });
     return;
   }
-}; 
-
-
-//Delete a customer
-const deleteCustomer = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleteCustomer = await Customer.destroy({
-      where: { id },
-    });
-    res.json({
-      message: "Customer deleted",
-      count: deleteCustomer,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Something went wrong",
-      data: {},
-    });
-  }
-};
-//Get customerId from Banner
-const getCustomerBanners = async (req, res) => {
-  const { id } = req.params;
-  console.log("this is an id: ", id);
-  try {
-    const banners = await Banner.findAll({
-      attributes: [
-        "id",
-        "name",
-        "image",
-        "endAt",
-        "startAt",
-        "status",
-        "customerId",
-      ],
-      where: { customerId: id },
-    });
-    console.log("banners; ", banners);
-    res.json(banners);
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-module.exports = {
-  createCustomer,
-  getAllCustomers,
-  getCustomerById,
-  updateCustomer,
-  deleteCustomer,
-  getCustomerBanners,
-};
+};  
+ */

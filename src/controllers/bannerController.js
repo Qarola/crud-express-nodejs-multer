@@ -65,51 +65,6 @@ const getBannerById = async (req, res) => {
   }
 };
 
-//Update a banner
-const updateBanner = async (req, res) => {
-  const { id } = req.params;
-  const { name, image, endAt, startAt, status, customerId } = req.body;
-  try {
-    const updateBanners = await Banner.findAll({
-      attributes: [
-        "id",
-        "name",
-        "image",
-        "endAt",
-        "startAt",
-        "status",
-        "customerId",
-      ],
-      where: {
-        id,
-      },
-    });
-    if (updateBanners.length > 0) {
-      updateBanners.map(async (updateBanner) => {
-        await updateBanner.update({
-          name,
-          image,
-          endAt,
-          startAt,
-          status,
-          customerId,
-        });
-      });
-    }
-    return res.json({
-      message: "Banner updated",
-      data: updateBanners,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "Something went wrong",
-      data: {},
-    });
-    return;
-  }
-};
-
 //Delete a banner
 const deleteBanner = async (req, res) => {
   try {
@@ -132,6 +87,5 @@ const deleteBanner = async (req, res) => {
 module.exports = {
   getAllBanners,
   getBannerById,
-  updateBanner,
   deleteBanner,
 };
