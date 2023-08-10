@@ -17,7 +17,7 @@ const swaggerSpec = {
     },
     servers: [
       {
-        url: "http://localhost:3001",
+        url: "https://crud-nodejs-multer.onrender.com/" || "http://localhost:3001",
       },
     ],
   },
