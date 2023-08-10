@@ -63,45 +63,47 @@ router.get("/customers", getAllCustomers);
  */
 router.get("/customer/:id", getCustomerById);
 
+
 /**
  * @swagger
  * /customer:
  *   post:
- *      summary: Create a new customer
- *      description: Create a new customer
- *      tags: [Customer]
- *      parameters:
- *          - in: body
- *            name: Customer
- *            description: Create a new customer
- *            schema:
- *              type: object
- *              required:
- *                 - name
- *                 - email
- *                 - phone
- *                 - password
- *              properties:
- *                  name:
- *                      type: string
- *                      example: Dove
- *                  email:
- *                      type: string
- *                      example: dove@email.com
- *                  phone:
- *                      type: string
- *                      example:  1134567-8912
- *                  password:
- *                       type: string
- *                       example: abc123
- *      responses:
- *          '200':
- *              description: Resource added successfully
- *          '500':
- *              description: Internal server error
- *          '400':
- *              description: Bad request
+ *     summary: Create a new customer
+ *     description: Create a new customer
+ *     tags: [Customer]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               phone:
+ *                 type: string
+ *                 example: 123-456-7890
+ *               password:
+ *                 type: string
+ *                 example: secret123
+ *     responses:
+ *       '200':
+ *         description: Customer created successfully
+ *       '400':
+ *         description: Bad request
+ *       '500':
+ *         description: Internal server error
  */
+
 router.post("/customer", createCustomer);
 
 /**
@@ -119,55 +121,33 @@ router.post("/customer", createCustomer);
  *           type: integer
  *         required: true
  *         description: The ID of the customer to update.
- *       - in: body
- *         name: customer
- *         required: true
- *         description: The customer data to update.
- *         schema:
- *           type: object
- *           properties:
- *             name:
- *               type: string
- *             email:
- *               type: string
- *             phone:
- *               type: string
- *             password:
- *               type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               phone:
+ *                 type: string
+ *                 example: 123-456-7890
+ *               password:
+ *                 type: string
+ *                 example: newpassword
  *     responses:
  *       '200':
  *         description: Customer updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/Customer'
  *       '404':
  *         description: Customer not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
  *       '500':
  *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
  */
 router.put("/update/:id", updateCustomer);
 
@@ -328,7 +308,7 @@ router.get("/images", (req, res) => {
   });
 });
 
-/* //Create a banner
+//Create a banner
 
 /**
  * @swagger
@@ -351,7 +331,7 @@ router.get("/images", (req, res) => {
  *       - in: formData
  *         name: image
  *         description: Banner image file
- *         required: true
+ *         required: require
  *         type: file
  *         save: image_data
  *       - in: formData
@@ -388,27 +368,33 @@ router.get("/images", (req, res) => {
  *       '500':
  *         description: Internal server error
  */
-
 router.post("/add", upload.single("image"), async (req, res) => {
   try {
     let info = {
       name: req.body.name,
-      image: req.file.path,
+      image: req.file?.path, // Validar si req.file existe antes de acceder a su propiedad
       endAt: req.body.endAt,
       startAt: req.body.startAt,
       status: req.body.status,
       customerId: parseInt(req.body.customerId),
     };
-    console.log(info);
-    //Save to Banner Database
+
+    // Verifica si la propiedad "image" se proporciona adecuadamente
+    if (!info.image) {
+      return res.status(400).json({ msg: "Image is required" });
+    }
+
+    // Guarda en la base de datos
     const newBanner = await Banner.create(info);
-    res.status(200).json({ msg: "File successfully created" });
+    res.status(200).json({ msg: "Banner created successfully" });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ msg: "Internal server error" });
   }
 });
 
+
+//update a banner by id
 /**
  * @swagger
  * /updatebanner/{id}:
@@ -472,6 +458,7 @@ router.post("/add", upload.single("image"), async (req, res) => {
  *       '500':
  *         description: Internal server error
  */
+
 router.put("/updatebanner/:id", upload.single("image"), async (req, res) => {
   const { id } = req.params;
   const { name, endAt, startAt, status, customerId } = req.body;
@@ -504,7 +491,7 @@ router.put("/updatebanner/:id", upload.single("image"), async (req, res) => {
     // Guardar los cambios en la base de datos
     await banner.save();
 
-    res.json({ message: "Successfully Updated Banner" });
+    res.json({ message: "Banner updated successfully" });
   } catch (error) {
     console.error("Error updating banner:", error);
     res.status(500).json({ error: "Error updating banner" });

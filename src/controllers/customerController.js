@@ -87,7 +87,7 @@ const updateCustomer = async (req, res) => {
   const { name, email, phone, password } = req.body;
 
   try {
-    const customer = await Customer.findById(id);
+    const customer = await Customer.findByPk(id);
 
     if (!customer) {
       return res.status(404).json({
@@ -106,7 +106,7 @@ const updateCustomer = async (req, res) => {
     return res.json({
       message: "Customer updated",
       data: {
-        id: customer.id,
+        customer,
       },
     });
   } catch (error) {
