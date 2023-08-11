@@ -1,5 +1,7 @@
 # CRUD NODEJS EXPRESS MULTER
 
+![screencapture-crud-nodejs-multer-onrender-api-doc-2023-08-11-07_38_59](https://github.com/Qarola/crud-express-nodejs-multer/assets/67078790/8b3017c1-5653-4991-9758-785024d4691e)
+
 
 ```sh
 
@@ -26,7 +28,7 @@ Execute o aplicativo no modo de desenvolvimento/local.
 ```sh
 Documentação com OpenAPI
 
- Path swagger: http://localhost:3001/api-doc/
+ Path swagger: https://crud-nodejs-multer.onrender.com/api-doc/ 
 
 ```
 
@@ -37,5 +39,6 @@ Para executar os testes:
 $ npm test
 
 ```
+
 
 
